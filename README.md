@@ -1,7 +1,3 @@
-# vibecodinghackathonPerfect! 😎 Since I have all your **HTML, CSS, JS, and Python files**, I can now draft a clean, professional **README.md** for your repository. Here’s a comprehensive version you can use:
-
----
-
 # AI Study Buddy
 
 AI Study Buddy is a web application designed to help students generate, save, and study flashcards from their notes. It features user authentication, a premium plan with advanced features, and mood tracking to monitor study trends.
