@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>AI Study Buddy</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  <header class="app-header">
+    <h1 class="title">AI Study Buddy – Flashcard Generator</h1>
+  </header>
+
+  <main class="note-section">
+    <textarea id="study-notes" class="note-input" placeholder="Paste your study notes here..."></textarea>
+    <button id="generate-btn" class="btn primary-btn">Generate Flashcards</button>
+  </main>
+
+  <section class="flashcard-container" id="flashcard-container">
+    <!-- Flashcards will appear here -->
+  </section>
+
+  <script>
+    const currentUserId = {{ user.id if user else 'null' }};
+
+    // Generate flashcards
+    document.getElementById('generate-btn').addEventListener('click', () => {
+      if (!currentUserId) {
+        alert('Please log in to generate flashcards.');
+        return;
+      }
+
+      const notes = document.getElementById('study-notes').value;
+      if (!notes.trim()) return alert('Please enter some notes.');
+
+      fetch('/generate_flashcards', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ notes })
+      })
+      .then(res => res.json())
+      .then(data => {
+        const container = document.getElementById('flashcard-container');
+        container.innerHTML = '';
+        data.forEach(card => {
+          const flashcard = document.createElement('div');
+          flashcard.className = 'flashcard';
+          flashcard.innerHTML = `
+            <div class="flashcard-inner">
+              <div class="flashcard-front">${card.question}</div>
+              <div class="flashcard-back">${card.answer}</div>
+            </div>`;
+          flashcard.addEventListener('click', () => flashcard.classList.toggle('flipped'));
+          container.appendChild(flashcard);
+        });
+
+        // Save flashcards
+        fetch('/save_flashcards', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ user_id: currentUserId, flashcards: data })
+        }).catch(err => console.error('Save error:', err));
+      })
+      .catch(err => console.error('Error:', err));
+    });
+
+    // Load saved flashcards
+    function loadSavedFlashcards() {
+      if (!currentUserId) return;
+      fetch(`/get_flashcards/${currentUserId}`)
+        .then(res => res.json())
+        .then(data => {
+          const container = document.getElementById('flashcard-container');
+          container.innerHTML = '';
+          if (!data.length) return container.innerHTML = '<p>No saved flashcards yet.</p>';
+          data.forEach(card => {
+            const flashcard = document.createElement('div');
+            flashcard.className = 'flashcard';
+            flashcard.innerHTML = `
+              <div class="flashcard-inner">
+                <div class="flashcard-front">${card.question}</div>
+                <div class="flashcard-back">${card.answer}</div>
+              </div>`;
+            flashcard.addEventListener('click', () => flashcard.classList.toggle('flipped'));
+            container.appendChild(flashcard);
+          });
+        });
+    }
+
+    loadSavedFlashcards();
+  </script>
+</body>
+</html>

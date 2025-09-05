@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Upgrade - AI Study Buddy</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  <script src="https://checkout.flutterwave.com/v3.js"></script>
+</head>
+<body>
+  <header class="app-header">
+    <h2 class="title">Upgrade to Premium</h2>
+  </header>
+
+  <main class="centered-layout">
+    <div class="auth-container">
+      <h2>🚀 Premium Plan</h2>
+      <p>Unlock unlimited flashcards and advanced features by upgrading to the Premium Plan.</p>
+      <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+        <strong>NGN 2,000/month</strong>
+        <br><small>✨ Unlimited flashcards generation</small>
+        <br><small>🧠 Advanced AI features</small>
+        <br><small>📱 Priority support</small>
+      </div>
+
+      <button type="button" id="flutterwave-btn" class="btn primary-btn">Pay with Flutterwave</button>
+
+      <p class="switch-link">
+        <a href="{{ url_for('dashboard', user_id=user_id) }}">← Back to Dashboard</a>
+      </p>
+    </div>
+  </main>
+  
+  <script>
+    // Pass user info from backend to frontend
+    window.currentUserId = {{ user_id }};
+    {% if user %}
+    window.currentUserEmail = "{{ user.email }}";
+    window.currentUserName = "{{ user.name }}";
+    {% endif %}
+  </script>
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>

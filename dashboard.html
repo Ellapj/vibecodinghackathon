@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard - AI Study Buddy</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <header class="app-header">
+        <h1 class="title">📚 AI Study Buddy Dashboard</h1>
+    </header>
+
+    <main class="note-section">
+        <section class="dashboard-section">
+            <h2>Welcome, {{ user.name }}! 👋</h2>
+            {% if user.is_premium %}
+                <div class="premium-status">
+                    <p><strong>🚀 Premium Plan Active</strong><br>Unlimited flashcards and advanced features!</p>
+                </div>
+            {% else %}
+                <div class="trial-status">
+                    <p><strong>📝 Free Trial</strong> (started {{ user.trial_start }})</p>
+                    <a href="{{ url_for('payment_page', user_id=user.id) }}" class="btn primary-btn">Upgrade to Premium</a>
+                </div>
+            {% endif %}
+        </section>
+
+        <!-- Flashcard Generation Section -->
+        <section class="dashboard-section">
+            <h2>Generate New Flashcards</h2>
+            <textarea id="study-notes" class="note-input" placeholder="Write your study notes here... The more detailed your notes, the better the flashcards will be!"></textarea>
+            <button id="generate-btn" class="btn primary-btn">Generate Flashcards</button>
+        </section>
+    </main>
+
+    <section class="flashcard-container">
+        <h2>Your Flashcards</h2>
+        <div id="flashcard-container">
+            <!-- Flashcards will be dynamically loaded here -->
+            <p class="loading">Loading your saved flashcards...</p>
+        </div>
+    </section>
+
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
